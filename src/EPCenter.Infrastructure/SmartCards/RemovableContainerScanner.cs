@@ -6,7 +6,14 @@ public sealed record FileKeyContainerInfo(
     string DriveName,
     string ContainerPath,
     int KeyFilesFound,
-    string DetectionStatus);
+    string DetectionStatus)
+{
+    public string CertificateOwner { get; init; } = string.Empty;
+    public DateTime? CertificateNotBefore { get; init; }
+    public DateTime? CertificateNotAfter { get; init; }
+    public string CertificateMatchStatus { get; init; } = "Не сопоставлен";
+    public string CertificateThumbprint { get; init; } = string.Empty;
+}
 
 public sealed class RemovableContainerScanResult
 {
