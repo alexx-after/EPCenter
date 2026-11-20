@@ -64,6 +64,7 @@ public sealed class WindowsCertificateScanner : ICertificateScanner
                     StoreName = "My",
                     StoreLocation = location.ToString(),
                     HasPrivateKey = certificate.HasPrivateKey,
+                    PrivateKeyStatus = PrivateKeyProbe.Check(certificate),
                     State = state
                 });
             }
