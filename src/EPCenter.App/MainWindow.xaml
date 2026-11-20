@@ -3,6 +3,7 @@
  <Grid Margin="16"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
   <DockPanel Grid.Row="0" Margin="0,0,0,12">
    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+    <Button x:Name="ScanFileContainersButton" Content="Файловые контейнеры" Click="ScanFileContainersButton_Click" Margin="0,0,8,0"/>
     <Button x:Name="ScanReadersButton" Content="Сканировать считыватели" Click="ScanReadersButton_Click" Margin="0,0,8,0"/>
     <Button x:Name="ScanContainersButton" Content="Контейнеры CryptoPro" Click="ScanContainersButton_Click"/>
     <Button x:Name="ScanButton" Content="Сканировать сертификаты" Click="ScanButton_Click"/>
@@ -10,7 +11,7 @@
    <StackPanel>
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
      <TextBlock Text="EPCenter" FontSize="26" FontWeight="SemiBold"/>
-     <TextBlock x:Name="AppVersionText" Text="v0.6.0" Margin="10,8,0,0" Foreground="Gray" FontSize="13" VerticalAlignment="Center"/>
+     <TextBlock x:Name="AppVersionText" Text="v0.7.0" Margin="10,8,0,0" Foreground="Gray" FontSize="13" VerticalAlignment="Center"/>
     </StackPanel>
     <TextBlock Text="Инвентаризация сертификатов электронной подписи" Foreground="Gray"/>
     <TextBlock x:Name="CryptoProVersionText" Text="CryptoPro CSP: проверка…" Margin="0,5,0,0" FontWeight="SemiBold"/>
@@ -59,6 +60,19 @@
        <DataGridTextColumn Header="Метод обнаружения" Binding="{Binding DetectionMethod}" Width="140"/>
        <DataGridTextColumn Header="Состояние карты" Binding="{Binding CardStatus}" Width="2*"/>
        <DataGridTextColumn Header="ATR" Binding="{Binding Atr}" Width="2*"/>
+      </DataGrid.Columns>
+     </DataGrid>
+    </Grid>
+   </TabItem>
+   <TabItem Header="Файловые контейнеры">
+    <Grid Margin="8"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+     <TextBlock x:Name="FileContainersStatusText" Grid.Row="0" Margin="0,0,0,8" Foreground="Gray" Text="Поиск папок CryptoPro на съёмных дисках. Содержимое файлов не читается."/>
+     <DataGrid x:Name="FileContainersGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" RowHeaderWidth="0">
+      <DataGrid.Columns>
+       <DataGridTextColumn Header="Съёмный диск" Binding="{Binding DriveName}" Width="150"/>
+       <DataGridTextColumn Header="Путь к контейнеру" Binding="{Binding ContainerPath}" Width="3*"/>
+       <DataGridTextColumn Header="Файлов найдено" Binding="{Binding KeyFilesFound}" Width="120"/>
+       <DataGridTextColumn Header="Результат проверки" Binding="{Binding DetectionStatus}" Width="2*"/>
       </DataGrid.Columns>
      </DataGrid>
     </Grid>
