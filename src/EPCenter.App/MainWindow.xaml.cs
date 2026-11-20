@@ -3,6 +3,7 @@ using System.Windows;
 using EPCenter.Core.Interfaces;
 using EPCenter.Infrastructure.Certificates;
 using EPCenter.Infrastructure.CryptoPro;
+using EPCenter.Infrastructure.SmartCards;
 
 namespace EPCenter.App;
 
