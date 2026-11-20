@@ -1,7 +1,11 @@
 <Window x:Class="EPCenter.App.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
- Title="EPCenter — сертификаты электронной подписи" Height="720" Width="1320" MinHeight="480" MinWidth="900" WindowStartupLocation="CenterScreen">
+ Title="EPCenter — сертификаты электронной подписи" Height="760" Width="1320" MinHeight="500" MinWidth="900" WindowStartupLocation="CenterScreen">
  <Grid Margin="16"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-  <DockPanel Grid.Row="0" Margin="0,0,0,12"><Button x:Name="ScanButton" Content="Сканировать" DockPanel.Dock="Right" VerticalAlignment="Center" Click="ScanButton_Click"/>
+  <DockPanel Grid.Row="0" Margin="0,0,0,12">
+   <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+    <Button x:Name="ScanContainersButton" Content="Контейнеры CryptoPro" Click="ScanContainersButton_Click"/>
+    <Button x:Name="ScanButton" Content="Сканировать сертификаты" Click="ScanButton_Click"/>
+   </StackPanel>
    <StackPanel>
     <TextBlock Text="EPCenter" FontSize="26" FontWeight="SemiBold"/>
     <TextBlock Text="Инвентаризация сертификатов Windows" Foreground="Gray"/>
@@ -9,21 +13,36 @@
    </StackPanel>
   </DockPanel>
   <Border Grid.Row="1" Background="#FFF3F5F8" CornerRadius="6" Padding="10" Margin="0,0,0,10">
-   <TextBlock Text="Проверка закрытого ключа выполняется в тихом режиме: приложение не вызывает окно PIN и не выполняет подпись или экспорт." TextWrapping="Wrap"/>
+   <TextBlock Text="Режим чтения. Перечисление контейнеров не выполняет подпись, экспорт или изменение ключей. PIN не запрашивается приложением." TextWrapping="Wrap"/>
   </Border>
-  <DataGrid x:Name="CertificatesGrid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column" GridLinesVisibility="Horizontal" RowHeaderWidth="0">
-   <DataGrid.Columns>
-    <DataGridTextColumn Header="Субъект" Binding="{Binding Subject}" Width="2*"/>
-    <DataGridTextColumn Header="Издатель" Binding="{Binding Issuer}" Width="2*"/>
-    <DataGridTextColumn Header="Отпечаток" Binding="{Binding Thumbprint}" Width="1.5*"/>
-    <DataGridTextColumn Header="Действителен с" Binding="{Binding NotBefore, StringFormat={}{0:dd.MM.yyyy}}" Width="105"/>
-    <DataGridTextColumn Header="Действителен до" Binding="{Binding NotAfter, StringFormat={}{0:dd.MM.yyyy}}" Width="105"/>
-    <DataGridTextColumn Header="Хранилище" Binding="{Binding StoreLocation}" Width="95"/>
-    <DataGridCheckBoxColumn Header="Есть ключ" Binding="{Binding HasPrivateKey}" Width="80"/>
-    <DataGridTextColumn Header="Доступность закрытого ключа" Binding="{Binding PrivateKeyStatus}" Width="2*"/>
-    <DataGridTextColumn Header="Состояние" Binding="{Binding State}" Width="110"/>
-   </DataGrid.Columns>
-  </DataGrid>
-  <TextBlock x:Name="StatusText" Grid.Row="3" Margin="0,10,0,0" Foreground="Gray" Text="Нажмите «Сканировать» для начала."/>
+  <TabControl Grid.Row="2">
+   <TabItem Header="Сертификаты Windows">
+    <DataGrid x:Name="CertificatesGrid" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column" GridLinesVisibility="Horizontal" RowHeaderWidth="0">
+     <DataGrid.Columns>
+      <DataGridTextColumn Header="Субъект" Binding="{Binding Subject}" Width="2*"/>
+      <DataGridTextColumn Header="Издатель" Binding="{Binding Issuer}" Width="2*"/>
+      <DataGridTextColumn Header="Отпечаток" Binding="{Binding Thumbprint}" Width="1.5*"/>
+      <DataGridTextColumn Header="Действителен с" Binding="{Binding NotBefore, StringFormat={}{0:dd.MM.yyyy}}" Width="105"/>
+      <DataGridTextColumn Header="Действителен до" Binding="{Binding NotAfter, StringFormat={}{0:dd.MM.yyyy}}" Width="105"/>
+      <DataGridTextColumn Header="Хранилище" Binding="{Binding StoreLocation}" Width="95"/>
+      <DataGridCheckBoxColumn Header="Есть ключ" Binding="{Binding HasPrivateKey}" Width="80"/>
+      <DataGridTextColumn Header="Доступность закрытого ключа" Binding="{Binding PrivateKeyStatus}" Width="2*"/>
+      <DataGridTextColumn Header="Состояние" Binding="{Binding State}" Width="110"/>
+     </DataGrid.Columns>
+    </DataGrid>
+   </TabItem>
+   <TabItem Header="Контейнеры CryptoPro">
+    <Grid Margin="8"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+     <TextBlock x:Name="ContainerStatusText" Grid.Row="0" Margin="0,0,0,8" Foreground="Gray" Text="Нажмите «Контейнеры CryptoPro» для перечисления контейнеров."/>
+     <DataGrid x:Name="ContainersGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" RowHeaderWidth="0">
+      <DataGrid.Columns>
+       <DataGridTextColumn Header="Полное имя контейнера" Binding="{Binding FullName}" Width="3*"/>
+       <DataGridTextColumn Header="Область" Binding="{Binding Scope}" Width="160"/>
+      </DataGrid.Columns>
+     </DataGrid>
+    </Grid>
+   </TabItem>
+  </TabControl>
+  <TextBlock x:Name="StatusText" Grid.Row="3" Margin="0,10,0,0" Foreground="Gray" Text="Готово."/>
  </Grid>
 </Window>
