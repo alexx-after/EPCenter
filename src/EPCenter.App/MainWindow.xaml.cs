@@ -12,8 +12,10 @@ public partial class MainWindow : Window
     private readonly ICertificateScanner _scanner = new WindowsCertificateScanner();
     private readonly CryptoProContainerScanner _containerScanner = new();
     private readonly SmartCardReaderScanner _readerScanner = new();
+    private readonly RemovableContainerScanner _fileContainerScanner = new();
     private CancellationTokenSource? _scanCancellation;
     private CancellationTokenSource? _containerScanCancellation;
+    private CancellationTokenSource? _fileContainerScanCancellation;
     private IReadOnlyList<CryptoProContainer> _lastContainers = [];
 
     public MainWindow()
@@ -47,6 +49,43 @@ public partial class MainWindow : Window
             CryptoProVersionText.ToolTip = installation.CsptestPath;
 
         return installation;
+    }
+
+    private async void ScanFileContainersButton_Click(object sender, RoutedEventArgs e)
+    {
+        _fileContainerScanCancellation?.Cancel();
+        _fileContainerScanCancellation?.Dispose();
+        _fileContainerScanCancellation = new CancellationTokenSource();
+        ScanFileContainersButton.IsEnabled = false;
+        FileContainersStatusText.Text = "Сканирование съёмных дисков…";
+        FileContainersGrid.ItemsSource = null;
+
+        try
+        {
+            var result = await _fileContainerScanner.ScanAsync(_fileContainerScanCancellation.Token);
+            FileContainersGrid.ItemsSource = result.Containers;
+            FileContainersStatusText.Text =
+                $"Дисков проверено: {result.ScannedDrives.Count}; каталогов просмотрено: {result.DirectoriesScanned:N0}; " +
+                $"контейнеров найдено: {result.Containers.Count}; отказов в доступе: {result.AccessDeniedCount}. " +
+                (result.ScannedDrives.Count == 0 ? "Съёмные диски не обнаружены или не готовы." : "");
+
+            if (result.Warnings.Count > 0)
+                MessageBox.Show(string.Join(Environment.NewLine, result.Warnings),
+                    "Файловые контейнеры", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        catch (OperationCanceledException)
+        {
+            FileContainersStatusText.Text = "Сканирование файловых контейнеров отменено.";
+        }
+        catch (Exception ex)
+        {
+            FileContainersStatusText.Text = "Ошибка сканирования файловых контейнеров.";
+            MessageBox.Show(ex.Message, "Файловые контейнеры", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            ScanFileContainersButton.IsEnabled = true;
+        }
     }
 
     private async void ScanReadersButton_Click(object sender, RoutedEventArgs e)
@@ -158,6 +197,8 @@ public partial class MainWindow : Window
         _scanCancellation?.Dispose();
         _containerScanCancellation?.Cancel();
         _containerScanCancellation?.Dispose();
+        _fileContainerScanCancellation?.Cancel();
+        _fileContainerScanCancellation?.Dispose();
         base.OnClosed(e);
     }
 }
