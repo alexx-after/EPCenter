@@ -85,7 +85,7 @@ public sealed class RemovableContainerScanner
 
                     directoriesScanned++;
                     var files = Directory.EnumerateFiles(currentPath, "*", SearchOption.TopDirectoryOnly)
-                        .Select(Path.GetFileName)
+                        .Select(file => Path.GetFileName(file))
                         .Where(name => name is not null)
                         .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
