@@ -57,7 +57,7 @@ public partial class MainWindow : Window
         _fileContainerScanCancellation?.Dispose();
         _fileContainerScanCancellation = new CancellationTokenSource();
         ScanFileContainersButton.IsEnabled = false;
-        FileContainersStatusText.Text = "Сканирование съёмных дисков…";
+        FileContainersStatusText.Text = "Сканирование локальных и съёмных дисков…";
         FileContainersGrid.ItemsSource = null;
 
         try
@@ -67,7 +67,7 @@ public partial class MainWindow : Window
             FileContainersStatusText.Text =
                 $"Дисков проверено: {result.ScannedDrives.Count}; каталогов просмотрено: {result.DirectoriesScanned:N0}; " +
                 $"контейнеров найдено: {result.Containers.Count}; отказов в доступе: {result.AccessDeniedCount}. " +
-                (result.ScannedDrives.Count == 0 ? "Съёмные диски не обнаружены или не готовы." : "");
+                (result.ScannedDrives.Count == 0 ? "Подходящие локальные/съёмные диски не обнаружены или не готовы." : "");
 
             if (result.Warnings.Count > 0)
                 MessageBox.Show(string.Join(Environment.NewLine, result.Warnings),
