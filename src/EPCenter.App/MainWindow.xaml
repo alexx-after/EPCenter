@@ -2,7 +2,11 @@
  Title="EPCenter — сертификаты электронной подписи" Height="720" Width="1320" MinHeight="480" MinWidth="900" WindowStartupLocation="CenterScreen">
  <Grid Margin="16"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
   <DockPanel Grid.Row="0" Margin="0,0,0,12"><Button x:Name="ScanButton" Content="Сканировать" DockPanel.Dock="Right" VerticalAlignment="Center" Click="ScanButton_Click"/>
-   <StackPanel><TextBlock Text="EPCenter" FontSize="26" FontWeight="SemiBold"/><TextBlock Text="Инвентаризация сертификатов Windows" Foreground="Gray"/></StackPanel>
+   <StackPanel>
+    <TextBlock Text="EPCenter" FontSize="26" FontWeight="SemiBold"/>
+    <TextBlock Text="Инвентаризация сертификатов Windows" Foreground="Gray"/>
+    <TextBlock x:Name="CryptoProVersionText" Text="CryptoPro CSP: проверка…" Margin="0,5,0,0" FontWeight="SemiBold"/>
+   </StackPanel>
   </DockPanel>
   <Border Grid.Row="1" Background="#FFF3F5F8" CornerRadius="6" Padding="10" Margin="0,0,0,10">
    <TextBlock Text="Проверка закрытого ключа выполняется в тихом режиме: приложение не вызывает окно PIN и не выполняет подпись или экспорт." TextWrapping="Wrap"/>
