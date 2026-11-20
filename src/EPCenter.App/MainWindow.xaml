@@ -11,7 +11,7 @@
    <StackPanel>
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
      <TextBlock Text="EPCenter" FontSize="26" FontWeight="SemiBold"/>
-     <TextBlock x:Name="AppVersionText" Text="v0.7.0" Margin="10,8,0,0" Foreground="Gray" FontSize="13" VerticalAlignment="Center"/>
+     <TextBlock x:Name="AppVersionText" Text="v0.8.0" Margin="10,8,0,0" Foreground="Gray" FontSize="13" VerticalAlignment="Center"/>
     </StackPanel>
     <TextBlock Text="Инвентаризация сертификатов электронной подписи" Foreground="Gray"/>
     <TextBlock x:Name="CryptoProVersionText" Text="CryptoPro CSP: проверка…" Margin="0,5,0,0" FontWeight="SemiBold"/>
@@ -71,8 +71,13 @@
       <DataGrid.Columns>
        <DataGridTextColumn Header="Диск" Binding="{Binding DriveName}" Width="150"/>
        <DataGridTextColumn Header="Путь к контейнеру" Binding="{Binding ContainerPath}" Width="3*"/>
-       <DataGridTextColumn Header="Файлов найдено" Binding="{Binding KeyFilesFound}" Width="120"/>
-       <DataGridTextColumn Header="Результат проверки" Binding="{Binding DetectionStatus}" Width="2*"/>
+       <DataGridTextColumn Header="Файлов найдено" Binding="{Binding KeyFilesFound}" Width="105"/>
+       <DataGridTextColumn Header="Кому выдан" Binding="{Binding CertificateOwner}" Width="2*"/>
+       <DataGridTextColumn Header="Действителен с" Binding="{Binding CertificateNotBefore, StringFormat={}{0:dd.MM.yyyy}}" Width="115"/>
+       <DataGridTextColumn Header="Действителен до" Binding="{Binding CertificateNotAfter, StringFormat={}{0:dd.MM.yyyy}}" Width="115"/>
+       <DataGridTextColumn Header="Сопоставление сертификата" Binding="{Binding CertificateMatchStatus}" Width="2*"/>
+       <DataGridTextColumn Header="Отпечаток сертификата" Binding="{Binding CertificateThumbprint}" Width="2*"/>
+       <DataGridTextColumn Header="Результат поиска" Binding="{Binding DetectionStatus}" Width="2*"/>
       </DataGrid.Columns>
      </DataGrid>
     </Grid>
