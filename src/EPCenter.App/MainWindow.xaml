@@ -49,7 +49,6 @@
      </DataGrid>
     </Grid>
    </TabItem>
-  </TabControl>
    <TabItem Header="Считыватели">
     <Grid Margin="8"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
      <TextBlock x:Name="ReadersStatusText" Grid.Row="0" Margin="0,0,0,8" Foreground="Gray" Text="Нажмите «Сканировать считыватели» для получения списка PC/SC устройств."/>
