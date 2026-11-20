@@ -33,7 +33,14 @@ public sealed class RemovableContainerScanner
         new(StringComparer.OrdinalIgnoreCase)
         {
             "$RECYCLE.BIN",
-            "System Volume Information"
+            "System Volume Information",
+            "Windows",
+            "Program Files",
+            "Program Files (x86)",
+            "ProgramData",
+            "Recovery",
+            "PerfLogs",
+            "$WinREAgent"
         };
 
     private const int MaxDepth = 12;
@@ -50,17 +57,24 @@ public sealed class RemovableContainerScanner
         var directoriesScanned = 0;
         var accessDeniedCount = 0;
 
-        foreach (var drive in DriveInfo.GetDrives().Where(item => item.DriveType == DriveType.Removable))
+        var candidateDrives = DriveInfo.GetDrives()
+            .Where(drive => drive.DriveType is DriveType.Removable or DriveType.Fixed)
+            .OrderBy(drive => drive.Name, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        foreach (var drive in candidateDrives)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             if (!drive.IsReady)
             {
-                warnings.Add($"Съёмный диск {drive.Name}: носитель не готов.");
+                warnings.Add($"Диск {drive.Name}: носитель не готов, пропущен.");
                 continue;
             }
 
-            scannedDrives.Add($"{drive.Name} ({SafeVolumeLabel(drive)})");
+            var driveType = drive.DriveType == DriveType.Fixed ? "Fixed" : "Removable";
+            scannedDrives.Add($"{drive.Name} ({SafeVolumeLabel(drive)}; {driveType})");
+
             var pending = new Stack<(string Path, int Depth)>();
             pending.Push((drive.RootDirectory.FullName, 0));
 
@@ -70,26 +84,25 @@ public sealed class RemovableContainerScanner
 
                 if (directoriesScanned >= MaxDirectories)
                 {
-                    warnings.Add($"Достигнут лимит обхода {MaxDirectories:N0} каталогов. Сканирование остановлено.");
+                    warnings.Add($"Достигнут общий лимит обхода {MaxDirectories:N0} каталогов. Сканирование остановлено.");
                     return BuildResult();
                 }
 
                 var (currentPath, depth) = pending.Pop();
-                DirectoryInfo currentDirectory;
 
                 try
                 {
-                    currentDirectory = new DirectoryInfo(currentPath);
+                    var currentDirectory = new DirectoryInfo(currentPath);
                     if ((currentDirectory.Attributes & FileAttributes.ReparsePoint) != 0)
                         continue;
 
                     directoriesScanned++;
                     var files = Directory.EnumerateFiles(currentPath, "*", SearchOption.TopDirectoryOnly)
-                        .Select(file => Path.GetFileName(file))
+                        .Select(Path.GetFileName)
                         .Where(name => name is not null)
                         .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-                    var foundCount = ExpectedKeyFiles.Count(expectedName => files.Contains(expectedName));
+                    var foundCount = ExpectedKeyFiles.Count(files.Contains);
                     if (foundCount == ExpectedKeyFiles.Length)
                     {
                         containers.Add(new FileKeyContainerInfo(
