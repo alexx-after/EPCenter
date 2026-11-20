@@ -5,6 +5,7 @@ public enum CertificateState { Valid, Expired, NotYetValid, NoPrivateKey, Unknow
 public sealed class CertificateInfo
 {
     public string Subject { get; init; } = string.Empty;
+    public string Owner { get; init; } = string.Empty;
     public string Issuer { get; init; } = string.Empty;
     public string Thumbprint { get; init; } = string.Empty;
     public string SerialNumber { get; init; } = string.Empty;
