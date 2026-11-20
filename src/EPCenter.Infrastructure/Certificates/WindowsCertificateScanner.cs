@@ -54,10 +54,12 @@ public sealed class WindowsCertificateScanner : ICertificateScanner
                     : CertificateState.Valid;
 
                 var keyProviderInfo = CertificateKeyProviderInfoReader.Read(certificate);
+                var owner = certificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false);
 
                 output.Add(new CertificateInfo
                 {
                     Subject = certificate.Subject,
+                    Owner = string.IsNullOrWhiteSpace(owner) ? certificate.Subject : owner,
                     Issuer = certificate.Issuer,
                     Thumbprint = certificate.Thumbprint ?? string.Empty,
                     SerialNumber = certificate.SerialNumber,
