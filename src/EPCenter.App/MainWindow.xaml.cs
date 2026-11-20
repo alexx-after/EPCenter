@@ -64,20 +64,38 @@ public partial class MainWindow : Window
         {
             var result = await _fileContainerScanner.ScanAsync(_fileContainerScanCancellation.Token);
             var certificateResult = await _scanner.ScanAsync(_fileContainerScanCancellation.Token);
+            var installation = ShowCryptoProStatus();
+            CryptoProContainerScanResult? cspResult = null;
+
+            if (!string.IsNullOrWhiteSpace(installation.CsptestPath))
+            {
+                FileContainersStatusText.Text = "Файловые контейнеры найдены. Сверка со списком CryptoPro…";
+                cspResult = await _containerScanner.ScanAsync(
+                    installation.CsptestPath, _fileContainerScanCancellation.Token);
+                _lastContainers = cspResult.Containers;
+            }
+
             var matchedContainers = FileCertificateContainerMatcher.MatchContainers(
-                result.Containers, certificateResult.Certificates);
+                result.Containers, certificateResult.Certificates,
+                cspResult?.Containers ?? Array.Empty<CryptoProContainer>());
 
             FileContainersGrid.ItemsSource = matchedContainers;
+            var cspMatched = matchedContainers.Count(item => !string.IsNullOrWhiteSpace(item.CryptoProContainerName));
+            var certMatched = matchedContainers.Count(item => !string.IsNullOrWhiteSpace(item.CertificateOwner));
             FileContainersStatusText.Text =
-                $"Дисков проверено: {result.ScannedDrives.Count}; каталогов просмотрено: {result.DirectoriesScanned:N0}; " +
-                $"контейнеров найдено: {matchedContainers.Count}; кандидатов сопоставления: " +
-                $"{matchedContainers.Count(item => !string.IsNullOrWhiteSpace(item.CertificateOwner))}; " +
-                $"сертификатов Windows: {certificateResult.Certificates.Count}; отказов в доступе: {result.AccessDeniedCount}. " +
-                "Совпадение по имени — предварительное, не подтверждает доступность закрытого ключа.";
+                $"Дисков: {result.ScannedDrives.Count}; каталогов: {result.DirectoriesScanned:N0}; " +
+                $"папок-контейнеров: {matchedContainers.Count}; найдено в CSP: {cspMatched}; " +
+                $"сопоставлено сертификатов: {certMatched}; сертификатов Windows: {certificateResult.Certificates.Count}; " +
+                $"отказов в доступе: {result.AccessDeniedCount}. " +
+                "Связь строится по имени контейнера; доступность и экспортируемость ключа не подтверждаются.";
 
-            StatusText.Text = $"Файловых контейнеров: {matchedContainers.Count}; сертификатов Windows: {certificateResult.Certificates.Count}.";
+            StatusText.Text = $"Файловых контейнеров: {matchedContainers.Count}; в CryptoPro: {cspMatched}; сертификатов: {certMatched}.";
 
-            var allWarnings = result.Warnings.Concat(certificateResult.Warnings).ToArray();
+            var allWarnings = result.Warnings.Concat(certificateResult.Warnings)
+                .Concat(cspResult?.Warnings ?? Array.Empty<string>()).ToArray();
+            if (string.IsNullOrWhiteSpace(installation.CsptestPath))
+                allWarnings = allWarnings.Append("Не найден csptest.exe: сопоставление с перечнем CryptoPro не выполнялось.").ToArray();
+
             if (allWarnings.Length > 0)
                 MessageBox.Show(string.Join(Environment.NewLine, allWarnings),
                     "Файловые контейнеры и сертификаты", MessageBoxButton.OK, MessageBoxImage.Warning);
