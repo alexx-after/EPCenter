@@ -30,6 +30,9 @@
       <DataGridTextColumn Header="Хранилище" Binding="{Binding StoreLocation}" Width="95"/>
       <DataGridCheckBoxColumn Header="Есть ключ" Binding="{Binding HasPrivateKey}" Width="80"/>
       <DataGridTextColumn Header="Доступность закрытого ключа" Binding="{Binding PrivateKeyStatus}" Width="2*"/>
+      <DataGridTextColumn Header="Провайдер" Binding="{Binding ProviderName}" Width="1.5*"/>
+      <DataGridTextColumn Header="Контейнер" Binding="{Binding ContainerName}" Width="2*"/>
+      <DataGridTextColumn Header="Сопоставление" Binding="{Binding ContainerMatchStatus}" Width="2*"/>
       <DataGridTextColumn Header="Состояние" Binding="{Binding State}" Width="110"/>
      </DataGrid.Columns>
     </DataGrid>
