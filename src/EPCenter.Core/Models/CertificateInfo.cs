@@ -13,5 +13,6 @@ public sealed class CertificateInfo
     public string StoreName { get; init; } = string.Empty;
     public string StoreLocation { get; init; } = string.Empty;
     public bool HasPrivateKey { get; init; }
+    public string PrivateKeyStatus { get; init; } = "Не проверен";
     public CertificateState State { get; init; }
 }
