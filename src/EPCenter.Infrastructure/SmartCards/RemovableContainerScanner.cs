@@ -89,7 +89,7 @@ public sealed class RemovableContainerScanner
                         .Where(name => name is not null)
                         .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-                    var foundCount = ExpectedKeyFiles.Count(files.Contains);
+                    var foundCount = ExpectedKeyFiles.Count(expectedName => files.Contains(expectedName));
                     if (foundCount == ExpectedKeyFiles.Length)
                     {
                         containers.Add(new FileKeyContainerInfo(
