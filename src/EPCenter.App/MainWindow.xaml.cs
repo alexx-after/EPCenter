@@ -61,7 +61,7 @@ public partial class MainWindow : Window
             ReadersGrid.ItemsSource = result.Readers;
             ReadersStatusText.Text = result.Readers.Count == 0
                 ? "PC/SC считыватели не обнаружены."
-                : $"Обнаружено считывателей: {result.Readers.Count}. Производитель определяется ориентировочно по имени устройства.";
+                : $"Обнаружено считывателей: {result.Readers.Count}. Производитель определяется ориентировочно по имени; ATR читается при вставленной карте.";
 
             if (result.Warnings.Count > 0)
                 MessageBox.Show(string.Join(Environment.NewLine, result.Warnings),
