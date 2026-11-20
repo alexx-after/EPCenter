@@ -15,7 +15,9 @@ public static class FileCertificateContainerMatcher
     {
         var certificateList = certificates
             .Where(certificate => IsCryptoProProvider(certificate.ProviderName))
-            .GroupBy(certificate => NormalizeThumbprint(certificate.Thumbprint), StringComparer.OrdinalIgnoreCase)
+            .GroupBy(certificate => string.IsNullOrWhiteSpace(certificate.Thumbprint)
+                ? $"{certificate.StoreLocation}|{certificate.Subject}|{certificate.ContainerName}|{certificate.NotBefore:O}|{certificate.NotAfter:O}"
+                : certificate.Thumbprint, StringComparer.OrdinalIgnoreCase)
             .Select(group => group.First())
             .ToArray();
 
@@ -64,6 +66,4 @@ public static class FileCertificateContainerMatcher
         return separatorIndex >= 0 ? normalized[(separatorIndex + 1)..] : normalized;
     }
 
-    private static string NormalizeThumbprint(string thumbprint) =>
-        string.IsNullOrWhiteSpace(thumbprint) ? Guid.NewGuid().ToString("N") : thumbprint;
 }
