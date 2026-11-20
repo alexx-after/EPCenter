@@ -6,8 +6,8 @@ namespace EPCenter.Infrastructure.Certificates;
 
 /// <summary>
 /// Links detected key-file directories to containers enumerated by CryptoPro,
-/// then links those CSP containers to Windows certificates. This is still
-/// an association by container name; it does not prove key usability/exportability.
+/// then links those CSP containers to Windows certificates. Name matching does
+/// not prove private-key usability or exportability.
 /// </summary>
 public static class FileCertificateContainerMatcher
 {
@@ -95,16 +95,19 @@ public static class FileCertificateContainerMatcher
         if (string.Equals(left, right, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        return right.EndsWith("\\\\" + left, StringComparison.OrdinalIgnoreCase) ||
-               left.EndsWith("\\\\" + right, StringComparison.OrdinalIgnoreCase);
+        return right.EndsWith(Path.DirectorySeparatorChar + left, StringComparison.OrdinalIgnoreCase) ||
+               right.EndsWith(Path.AltDirectorySeparatorChar + left, StringComparison.OrdinalIgnoreCase) ||
+               left.EndsWith(Path.DirectorySeparatorChar + right, StringComparison.OrdinalIgnoreCase) ||
+               left.EndsWith(Path.AltDirectorySeparatorChar + right, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static string Normalize(string value) => value.Trim().Trim('"').TrimEnd('\\\\');
+    private static string Normalize(string value) =>
+        value.Trim().Trim('"').TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
     private static string GetLeaf(string value)
     {
         var normalized = Normalize(value);
-        var index = normalized.LastIndexOf('\\\\');
+        var index = normalized.LastIndexOfAny([Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar]);
         return index >= 0 ? normalized[(index + 1)..] : normalized;
     }
 }
