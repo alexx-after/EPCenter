@@ -8,6 +8,8 @@ public sealed record FileKeyContainerInfo(
     int KeyFilesFound,
     string DetectionStatus)
 {
+    public string CryptoProContainerName { get; init; } = string.Empty;
+    public string CryptoProScope { get; init; } = string.Empty;
     public string CertificateOwner { get; init; } = string.Empty;
     public DateTime? CertificateNotBefore { get; init; }
     public DateTime? CertificateNotAfter { get; init; }
