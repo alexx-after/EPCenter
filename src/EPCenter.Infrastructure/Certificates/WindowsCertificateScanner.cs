@@ -53,6 +53,8 @@ public sealed class WindowsCertificateScanner : ICertificateScanner
                     : now > certificate.NotAfter ? CertificateState.Expired
                     : CertificateState.Valid;
 
+                var keyProviderInfo = CertificateKeyProviderInfoReader.Read(certificate);
+
                 output.Add(new CertificateInfo
                 {
                     Subject = certificate.Subject,
@@ -65,6 +67,10 @@ public sealed class WindowsCertificateScanner : ICertificateScanner
                     StoreLocation = location.ToString(),
                     HasPrivateKey = certificate.HasPrivateKey,
                     PrivateKeyStatus = PrivateKeyProbe.Check(certificate),
+                    ContainerName = keyProviderInfo?.ContainerName ?? string.Empty,
+                    ProviderName = keyProviderInfo?.ProviderName ?? string.Empty,
+                    ProviderType = keyProviderInfo?.ProviderType,
+                    IsMachineKeyset = keyProviderInfo?.IsMachineKeyset,
                     State = state
                 });
             }
