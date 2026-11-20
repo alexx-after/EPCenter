@@ -66,7 +66,7 @@
    </TabItem>
    <TabItem Header="Файловые контейнеры">
     <Grid Margin="8"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-     <TextBlock x:Name="FileContainersStatusText" Grid.Row="0" Margin="0,0,0,8" Foreground="Gray" Text="Поиск папок CryptoPro на локальных и съёмных дисках. Содержимое файлов не читается."/>
+     <TextBlock x:Name="FileContainersStatusText" Grid.Row="0" Margin="0,0,0,8" Foreground="Gray" Text="Поиск папок CryptoPro на локальных, съёмных и подключённых сетевых дисках. Содержимое файлов не читается."/>
      <DataGrid x:Name="FileContainersGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" RowHeaderWidth="0">
       <DataGrid.Columns>
        <DataGridTextColumn Header="Диск" Binding="{Binding DriveName}" Width="150"/>
