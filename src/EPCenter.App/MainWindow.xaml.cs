@@ -1,6 +1,7 @@
 using System.Windows;
 using EPCenter.Core.Interfaces;
 using EPCenter.Infrastructure.Certificates;
+using EPCenter.Infrastructure.CryptoPro;
 
 namespace EPCenter.App;
 
@@ -9,7 +10,22 @@ public partial class MainWindow : Window
     private readonly ICertificateScanner _scanner = new WindowsCertificateScanner();
     private CancellationTokenSource? _scanCancellation;
 
-    public MainWindow() => InitializeComponent();
+    public MainWindow()
+    {
+        InitializeComponent();
+        ShowCryptoProStatus();
+    }
+
+    private void ShowCryptoProStatus()
+    {
+        var installation = CryptoProDetector.Detect();
+        CryptoProVersionText.Text = installation.IsInstalled
+            ? $"CryptoPro CSP: {installation.Version} — {installation.Status}"
+            : "CryptoPro CSP: не обнаружен";
+
+        if (!string.IsNullOrWhiteSpace(installation.CsptestPath))
+            CryptoProVersionText.ToolTip = installation.CsptestPath;
+    }
 
     private async void ScanButton_Click(object sender, RoutedEventArgs e)
     {
