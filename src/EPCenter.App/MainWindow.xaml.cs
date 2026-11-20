@@ -63,15 +63,24 @@ public partial class MainWindow : Window
         try
         {
             var result = await _fileContainerScanner.ScanAsync(_fileContainerScanCancellation.Token);
-            FileContainersGrid.ItemsSource = result.Containers;
+            var certificateResult = await _scanner.ScanAsync(_fileContainerScanCancellation.Token);
+            var matchedContainers = FileCertificateContainerMatcher.MatchContainers(
+                result.Containers, certificateResult.Certificates);
+
+            FileContainersGrid.ItemsSource = matchedContainers;
             FileContainersStatusText.Text =
                 $"Дисков проверено: {result.ScannedDrives.Count}; каталогов просмотрено: {result.DirectoriesScanned:N0}; " +
-                $"контейнеров найдено: {result.Containers.Count}; отказов в доступе: {result.AccessDeniedCount}. " +
-                (result.ScannedDrives.Count == 0 ? "Подходящие диски не обнаружены или не готовы." : "");
+                $"контейнеров найдено: {matchedContainers.Count}; кандидатов сопоставления: " +
+                $"{matchedContainers.Count(item => !string.IsNullOrWhiteSpace(item.CertificateOwner))}; " +
+                $"сертификатов Windows: {certificateResult.Certificates.Count}; отказов в доступе: {result.AccessDeniedCount}. " +
+                "Совпадение по имени — предварительное, не подтверждает доступность закрытого ключа.";
 
-            if (result.Warnings.Count > 0)
-                MessageBox.Show(string.Join(Environment.NewLine, result.Warnings),
-                    "Файловые контейнеры", MessageBoxButton.OK, MessageBoxImage.Warning);
+            StatusText.Text = $"Файловых контейнеров: {matchedContainers.Count}; сертификатов Windows: {certificateResult.Certificates.Count}.";
+
+            var allWarnings = result.Warnings.Concat(certificateResult.Warnings).ToArray();
+            if (allWarnings.Length > 0)
+                MessageBox.Show(string.Join(Environment.NewLine, allWarnings),
+                    "Файловые контейнеры и сертификаты", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (OperationCanceledException)
         {
