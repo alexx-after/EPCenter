@@ -10,6 +10,7 @@ public partial class MainWindow : Window
 {
     private readonly ICertificateScanner _scanner = new WindowsCertificateScanner();
     private readonly CryptoProContainerScanner _containerScanner = new();
+    private readonly SmartCardReaderScanner _readerScanner = new();
     private CancellationTokenSource? _scanCancellation;
     private CancellationTokenSource? _containerScanCancellation;
     private IReadOnlyList<CryptoProContainer> _lastContainers = [];
@@ -45,6 +46,35 @@ public partial class MainWindow : Window
             CryptoProVersionText.ToolTip = installation.CsptestPath;
 
         return installation;
+    }
+
+    private async void ScanReadersButton_Click(object sender, RoutedEventArgs e)
+    {
+        ScanReadersButton.IsEnabled = false;
+        ReadersStatusText.Text = "Поиск PC/SC считывателей…";
+        ReadersGrid.ItemsSource = null;
+
+        try
+        {
+            var result = await _readerScanner.ScanAsync();
+            ReadersGrid.ItemsSource = result.Readers;
+            ReadersStatusText.Text = result.Readers.Count == 0
+                ? "PC/SC считыватели не обнаружены."
+                : $"Обнаружено считывателей: {result.Readers.Count}. Производитель определяется ориентировочно по имени устройства.";
+
+            if (result.Warnings.Count > 0)
+                MessageBox.Show(string.Join(Environment.NewLine, result.Warnings),
+                    "Считыватели смарт-карт", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        catch (Exception ex)
+        {
+            ReadersStatusText.Text = "Ошибка поиска считывателей.";
+            MessageBox.Show(ex.Message, "Считыватели смарт-карт", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            ScanReadersButton.IsEnabled = true;
+        }
     }
 
     private async void ScanContainersButton_Click(object sender, RoutedEventArgs e)
