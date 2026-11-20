@@ -72,6 +72,8 @@
        <DataGridTextColumn Header="Диск" Binding="{Binding DriveName}" Width="150"/>
        <DataGridTextColumn Header="Путь к контейнеру" Binding="{Binding ContainerPath}" Width="3*"/>
        <DataGridTextColumn Header="Файлов найдено" Binding="{Binding KeyFilesFound}" Width="105"/>
+       <DataGridTextColumn Header="Контейнер CryptoPro" Binding="{Binding CryptoProContainerName}" Width="2*"/>
+       <DataGridTextColumn Header="Область CSP" Binding="{Binding CryptoProScope}" Width="110"/>
        <DataGridTextColumn Header="Кому выдан" Binding="{Binding CertificateOwner}" Width="2*"/>
        <DataGridTextColumn Header="Действителен с" Binding="{Binding CertificateNotBefore, StringFormat={}{0:dd.MM.yyyy}}" Width="115"/>
        <DataGridTextColumn Header="Действителен до" Binding="{Binding CertificateNotAfter, StringFormat={}{0:dd.MM.yyyy}}" Width="115"/>
