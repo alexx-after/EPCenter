@@ -1,5 +1,5 @@
 <Window x:Class="EPCenter.App.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
- Title="EPCenter — сертификаты электронной подписи" Height="760" Width="1320" MinHeight="500" MinWidth="900" WindowStartupLocation="CenterScreen">
+ Title="EPCenter" Height="760" Width="1320" MinHeight="500" MinWidth="900" WindowStartupLocation="CenterScreen">
  <Grid Margin="16"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
   <DockPanel Grid.Row="0" Margin="0,0,0,12">
    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
@@ -7,8 +7,11 @@
     <Button x:Name="ScanButton" Content="Сканировать сертификаты" Click="ScanButton_Click"/>
    </StackPanel>
    <StackPanel>
-    <TextBlock Text="EPCenter" FontSize="26" FontWeight="SemiBold"/>
-    <TextBlock Text="Инвентаризация сертификатов Windows" Foreground="Gray"/>
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+     <TextBlock Text="EPCenter" FontSize="26" FontWeight="SemiBold"/>
+     <TextBlock x:Name="AppVersionText" Text="v0.3.0" Margin="10,8,0,0" Foreground="Gray" FontSize="13" VerticalAlignment="Center"/>
+    </StackPanel>
+    <TextBlock Text="Инвентаризация сертификатов электронной подписи" Foreground="Gray"/>
     <TextBlock x:Name="CryptoProVersionText" Text="CryptoPro CSP: проверка…" Margin="0,5,0,0" FontWeight="SemiBold"/>
    </StackPanel>
   </DockPanel>
