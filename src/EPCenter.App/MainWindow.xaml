@@ -10,7 +10,7 @@
    <StackPanel>
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
      <TextBlock Text="EPCenter" FontSize="26" FontWeight="SemiBold"/>
-     <TextBlock x:Name="AppVersionText" Text="v0.5.0" Margin="10,8,0,0" Foreground="Gray" FontSize="13" VerticalAlignment="Center"/>
+     <TextBlock x:Name="AppVersionText" Text="v0.6.0" Margin="10,8,0,0" Foreground="Gray" FontSize="13" VerticalAlignment="Center"/>
     </StackPanel>
     <TextBlock Text="Инвентаризация сертификатов электронной подписи" Foreground="Gray"/>
     <TextBlock x:Name="CryptoProVersionText" Text="CryptoPro CSP: проверка…" Margin="0,5,0,0" FontWeight="SemiBold"/>
@@ -51,12 +51,14 @@
    </TabItem>
    <TabItem Header="Считыватели">
     <Grid Margin="8"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-     <TextBlock x:Name="ReadersStatusText" Grid.Row="0" Margin="0,0,0,8" Foreground="Gray" Text="Нажмите «Сканировать считыватели» для получения списка PC/SC устройств."/>
+     <TextBlock x:Name="ReadersStatusText" Grid.Row="0" Margin="0,0,0,8" Foreground="Gray" Text="Сканирование PC/SC считывателей и чтение ATR вставленной карты без PIN."/>
      <DataGrid x:Name="ReadersGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" RowHeaderWidth="0">
       <DataGrid.Columns>
        <DataGridTextColumn Header="Имя считывателя Windows" Binding="{Binding ReaderName}" Width="3*"/>
        <DataGridTextColumn Header="Предполагаемый производитель" Binding="{Binding VendorHint}" Width="2*"/>
-       <DataGridTextColumn Header="Метод обнаружения" Binding="{Binding DetectionMethod}" Width="160"/>
+       <DataGridTextColumn Header="Метод обнаружения" Binding="{Binding DetectionMethod}" Width="140"/>
+       <DataGridTextColumn Header="Состояние карты" Binding="{Binding CardStatus}" Width="2*"/>
+       <DataGridTextColumn Header="ATR" Binding="{Binding Atr}" Width="2*"/>
       </DataGrid.Columns>
      </DataGrid>
     </Grid>
