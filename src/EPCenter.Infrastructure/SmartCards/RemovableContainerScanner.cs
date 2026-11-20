@@ -58,7 +58,7 @@ public sealed class RemovableContainerScanner
         var accessDeniedCount = 0;
 
         var candidateDrives = DriveInfo.GetDrives()
-            .Where(drive => drive.DriveType is DriveType.Removable or DriveType.Fixed)
+            .Where(drive => drive.DriveType is DriveType.Removable or DriveType.Fixed or DriveType.Network)
             .OrderBy(drive => drive.Name, StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
@@ -72,7 +72,7 @@ public sealed class RemovableContainerScanner
                 continue;
             }
 
-            var driveType = drive.DriveType == DriveType.Fixed ? "Fixed" : "Removable";
+            var driveType = drive.DriveType.ToString();
             scannedDrives.Add($"{drive.Name} ({SafeVolumeLabel(drive)}; {driveType})");
 
             var pending = new Stack<(string Path, int Depth)>();
