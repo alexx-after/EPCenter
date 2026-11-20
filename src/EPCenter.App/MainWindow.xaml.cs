@@ -12,6 +12,7 @@ public partial class MainWindow : Window
     private readonly CryptoProContainerScanner _containerScanner = new();
     private CancellationTokenSource? _scanCancellation;
     private CancellationTokenSource? _containerScanCancellation;
+    private IReadOnlyList<CryptoProContainer> _lastContainers = [];
 
     public MainWindow()
     {
@@ -67,7 +68,11 @@ public partial class MainWindow : Window
             var result = await _containerScanner.ScanAsync(
                 installation.CsptestPath, _containerScanCancellation.Token);
 
+            _lastContainers = result.Containers;
             ContainersGrid.ItemsSource = result.Containers;
+            var certificateResult = await _scanner.ScanAsync(_containerScanCancellation.Token);
+            CertificatesGrid.ItemsSource = CertificateContainerMatcher.Match(certificateResult.Certificates, _lastContainers);
+            StatusText.Text = $"Сертификатов: {certificateResult.Certificates.Count}. Контейнеры сопоставлены.";
             ContainerStatusText.Text =
                 $"Найдено контейнеров: {result.Containers.Count}. Предупреждений: {result.Warnings.Count}.";
 
@@ -101,7 +106,7 @@ public partial class MainWindow : Window
         try
         {
             var result = await _scanner.ScanAsync(_scanCancellation.Token);
-            CertificatesGrid.ItemsSource = result.Certificates;
+            CertificatesGrid.ItemsSource = CertificateContainerMatcher.Match(result.Certificates, _lastContainers);
             StatusText.Text = $"Найдено сертификатов: {result.Certificates.Count}. Предупреждений: {result.Warnings.Count}.";
             if (result.Warnings.Count > 0)
                 MessageBox.Show(string.Join(Environment.NewLine, result.Warnings), "Предупреждения сканирования",
